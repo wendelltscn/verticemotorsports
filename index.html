@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="https://i.imgur.com/LJaOS15.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VERTICE MOTORSPORTS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://i.ytimg.com">
+    <link rel="preconnect" href="https://i.imgur.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://forminit.com/sdk/v1/forminit.js" defer></script>
+    <style>
+      :root {
+        --yellow: #fde047; /* yellow-300 */
+        --dark-gray: #111111;
+        --text-gray: #9ca3af;
+        --bg-color: #000;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Roboto Mono', monospace;
+        background-color: var(--bg-color);
+        color: var(--text-gray);
+        cursor: none; /* Hide default cursor */
+      }
+      .font-editorial {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+      }
+      .font-technical {
+        font-family: 'Roboto Mono', monospace;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--yellow);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #facc15;
+      }
+
+      /* === MIDNIGHT RUN THEME === */
+      [data-theme="midnight"] {
+        --yellow: #d97706; /* amber-600 */
+        --bg-color: #0a0a0a;
+      }
+      [data-theme="midnight"] body {
+        background-color: var(--bg-color);
+      }
+      [data-theme="midnight"] .text-yellow-300,
+      [data-theme="midnight"] .border-yellow-300,
+      [data-theme="midnight"] .hover\:text-yellow-300:hover,
+      [data-theme="midnight"] .hover\:border-yellow-300:hover {
+        color: var(--yellow);
+        border-color: var(--yellow);
+      }
+      [data-theme="midnight"] .bg-yellow-300 {
+        background-color: var(--yellow);
+        color: #000; /* Ensure text is readable on amber background */
+      }
+      [data-theme="midnight"] .hover\:bg-yellow-300:hover {
+        background-color: var(--yellow);
+        color: #000; /* Ensure text is readable on hover */
+      }
+       [data-theme="midnight"] .accent-yellow-300 {
+        accent-color: var(--yellow);
+      }
+      [data-theme="midnight"] .text-orange-400 {
+        color: var(--yellow);
+      }
+      [data-theme="midnight"] .border-orange-400 {
+        border-color: var(--yellow);
+      }
+      [data-theme="midnight"] .h-px.bg-orange-400 {
+        background-color: var(--yellow);
+      }
+      [data-theme="midnight"] #redline-effect div {
+        background-color: var(--yellow) !important;
+        box-shadow: 0 0 10px var(--yellow), 0 0 20px var(--yellow) !important;
+      }
+
+
+      /* === LIVE LAYER & UI FEEDBACK === */
+      
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(18, 18, 18, 0) 0%, rgba(18, 18, 18, 0.2) 50%, rgba(18, 18, 18, 0) 100%);
+        opacity: 0.3;
+        z-index: 9998;
+        pointer-events: none;
+        animation: scanline 8s linear infinite;
+      }
+
+      @keyframes scanline {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+      }
+
+
+      /* Subtle Grain Overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        width: 200%;
+        height: 200%;
+        pointer-events: none;
+        background: transparent url('data:image/svg+xml,<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="6" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        opacity: 0.025;
+        z-index: 9999;
+        animation: grain 8s steps(10) infinite;
+      }
+      @keyframes grain {
+        0%, 100% { transform: translate(0, 0) }
+        10% { transform: translate(-5%, -10%) }
+        20% { transform: translate(-15%, 5%) }
+        30% { transform: translate(7%, -25%) }
+        40% { transform: translate(-5%, 25%) }
+        50% { transform: translate(-15%, 10%) }
+        60% { transform: translate(15%, 0%) }
+        70% { transform: translate(0%, 15%) }
+        80% { transform: translate(3%, 35%) }
+        90% { transform: translate(-10%, 10%) }
+      }
+
+      /* Cursor & Press Feedback */
+      button, a, [onclick] {
+        cursor: none;
+      }
+      button:active, a:active {
+        transform: scale(0.98);
+        transition: transform 0.08s cubic-bezier(0.5, 1, 0.89, 1);
+      }
+
+      /* === PROJECT HOTSPOTS === */
+      @keyframes pulse-hotspot {
+        0%, 100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.5);
+          opacity: 1;
+        }
+      }
+      .hotspot-pulse {
+        animation: pulse-hotspot 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+      }
+
+      /* === PAGE TRANSITIONS & ANIMATIONS === */
+
+      .page-transition-wrapper {
+        transition: opacity 0.4s cubic-bezier(0.65, 0, 0.35, 1), transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+      }
+      .page-transition-wrapper.entering {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+      .page-transition-wrapper.exiting {
+        opacity: 0;
+        transform: scale(0.98) translateY(-8px);
+      }
+      .page-transition-wrapper.initial {
+         opacity: 0;
+         transform: scale(1.02) translateY(8px);
+      }
+
+      /* Content Stagger Animation */
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      /* Default Profile */
+      .animate-fade-in-up {
+        animation: fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      /* Motion Profiles */
+      .animate-fade-in-up-slow {
+        animation: fade-in-up 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+      }
+      .animate-fade-in-up-fast {
+        animation: fade-in-up 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19) both;
+      }
+      .animate-fade-in-up-elegant {
+        animation: fade-in-up 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .animate-fade-in-up-dynamic {
+        animation: fade-in-up 0.7s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+      }
+
+      /* Text Flicker Animation */
+       @keyframes text-flicker {
+        0%, 100% { opacity: 1; }
+        50.0% { opacity: 1; }
+        50.2% { opacity: 0.7; }
+        50.6% { opacity: 1; }
+        75.0% { opacity: 1; }
+        75.2% { opacity: 0.5; }
+        75.8% { opacity: 1; }
+      }
+      .animate-text-flicker {
+        animation: text-flicker 4s linear infinite;
+      }
+
+      /* Ignition Sequence Animation */
+      @keyframes rev-rumble {
+        0% { transform: translate(0, 0) scale(1.0); }
+        10% { transform: translate(-1px, 1px) scale(1.02); }
+        20% { transform: translate(1px, -1px) scale(1.04); }
+        30% { transform: translate(-1px, 0px) scale(1.02); }
+        40% { transform: translate(0px, 1px) scale(1.0); }
+        100% { transform: translate(0, 0) scale(1.0); }
+      }
+      .animate-rev-rumble {
+        animation: rev-rumble 0.6s ease-in-out;
+      }
+
+      /* Text Glow Animation */
+      @keyframes text-glow {
+        0%, 100% { text-shadow: 0 0 5px rgba(253, 224, 71, 0.3); }
+        50% { text-shadow: 0 0 20px rgba(253, 224, 71, 0.8), 0 0 30px rgba(253, 224, 71, 0.6); }
+      }
+      .animate-text-glow {
+        animation: text-glow 1.5s ease-in-out;
+      }
+
+      /* Preloader Animation */
+      @keyframes flicker {
+        0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% {
+            opacity: .99;
+        }
+        20%, 21.9%, 63%, 63.9%, 65%, 69.9% {
+            opacity: .4;
+        }
+      }
+      .animate-flicker {
+        animation: flicker 3s infinite;
+      }
+
+      .delay-100 { animation-delay: 100ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-300 { animation-delay: 300ms; }
+      .delay-400 { animation-delay: 400ms; }
+      .delay-500 { animation-delay: 500ms; }
+      .delay-600 { animation-delay: 600ms; }
+
+      /* Grid Background Animation */
+      @keyframes pan-grid {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 100% 100%; }
+      }
+
+      /* Original Text Focus (for specific elements) */
+      @keyframes text-focus-in {
+        0% {
+          -webkit-filter: blur(12px);
+                  filter: blur(12px);
+          opacity: 0;
+        }
+        100% {
+          -webkit-filter: blur(0px);
+                  filter: blur(0px);
+          opacity: 1;
+        }
+      }
+
+      .animate-text-focus-in {
+	      animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.36.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "path": "https://esm.sh/path@^0.12.7"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-black">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
