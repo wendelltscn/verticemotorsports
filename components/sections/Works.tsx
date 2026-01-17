@@ -57,8 +57,8 @@ const Works: React.FC<WorksProps> = ({ onNavigate }) => {
 
     useEffect(() => {
         // Preload audio for ignition sequence
-        ignitionKeyAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/8ctu9afi7f6fsejol1sym/Key-start-engine-sound-effect.mp3?rlkey=vttalgh2f6732nvvc2hzgjqnt&st=w0ijfuwd&dl=1");
-        ignitionStartAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/e340i4067i14xzjfw0eap/Car-Engine-Start-Sound-Effect-ProSounds.mp3?rlkey=rv0ph2x5m2aax9glkpn541gd1&st=2izy0jzm&dl=1");
+        ignitionKeyAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/8ctu9afi7f6fsejol1sym/Key-start-engine-sound-effect.mp3?rlkey=vttalgh2f6732nvvc2hzgjqnt&raw=1");
+        ignitionStartAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/e340i4067i14xzjfw0eap/Car-Engine-Start-Sound-Effect-ProSounds.mp3?rlkey=rv0ph2x5m2aax9glkpn541gd1&raw=1");
         
         if (ignitionKeyAudioRef.current) {
             ignitionKeyAudioRef.current.onended = () => {

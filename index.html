@@ -14,20 +14,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://forminit.com/sdk/v1/forminit.js" defer></script>
     <style>
-      :root {
-        --yellow: #fde047; /* yellow-300 */
-        --dark-gray: #111111;
-        --text-gray: #9ca3af;
-        --bg-color: #000;
+      /* === THEME VARIABLES === */
+      body {
+        --bg-color: #000000;
+        --text-color: #9ca3af; /* gray-400 */
+        --text-color-strong: #ffffff;
+        --border-color: #374151; /* gray-700 */
+        --border-color-light: #1f2937; /* gray-800 */
+        --accent-color: #fde047; /* yellow-300 */
+        --accent-text-color: #000000;
+        --redline-color: #ef4444; /* red-500 */
+        --overlay-color: #000000;
+        --bg-modal: #0A0F1A;
+        --bg-card-glass: rgba(255, 255, 255, 0.05);
+        --border-card-glass: rgba(255, 255, 255, 0.1);
       }
+
       html {
         scroll-behavior: smooth;
       }
       body {
         font-family: 'Roboto Mono', monospace;
         background-color: var(--bg-color);
-        color: var(--text-gray);
+        color: var(--text-color);
         cursor: none; /* Hide default cursor */
+        transition: background-color 0.5s ease, color 0.5s ease;
       }
       .font-editorial {
         font-family: 'Cinzel', serif;
@@ -36,61 +47,73 @@
       .font-technical {
         font-family: 'Roboto Mono', monospace;
       }
+      
+      /* === THEME-AWARE STYLES === */
+      
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 5px;
       }
       ::-webkit-scrollbar-track {
-        background: #000;
+        background: var(--bg-color);
       }
       ::-webkit-scrollbar-thumb {
-        background: var(--yellow);
+        background: var(--accent-color);
         border-radius: 10px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #facc15;
+
+      /* Text Colors */
+      .text-white { color: var(--text-color-strong); }
+      .text-black { color: var(--accent-text-color); }
+      .text-gray-300 { color: var(--text-color); }
+      .text-gray-400 { color: var(--text-color); }
+      .text-gray-500 { color: color-mix(in srgb, var(--text-color) 80%, var(--bg-color)); }
+      .text-gray-600 { color: color-mix(in srgb, var(--text-color) 60%, var(--bg-color)); }
+      .text-gray-700 { color: color-mix(in srgb, var(--text-color) 40%, var(--bg-color)); }
+      .text-yellow-300, .text-orange-400 { color: var(--accent-color); }
+      
+      /* Background Colors */
+      .bg-black { background-color: var(--bg-color); }
+      .bg-modal { background-color: var(--bg-modal); }
+      .bg-overlay-30 { background-color: color-mix(in srgb, var(--overlay-color) 30%, transparent); }
+      .bg-overlay-40 { background-color: color-mix(in srgb, var(--overlay-color) 40%, transparent); }
+      .bg-overlay-50 { background-color: color-mix(in srgb, var(--overlay-color) 50%, transparent); }
+      .bg-overlay-60 { background-color: color-mix(in srgb, var(--overlay-color) 60%, transparent); }
+      .bg-overlay-70 { background-color: color-mix(in srgb, var(--overlay-color) 70%, transparent); }
+      .bg-overlay-80 { background-color: color-mix(in srgb, var(--overlay-color) 80%, transparent); }
+      .bg-overlay-90 { background-color: color-mix(in srgb, var(--overlay-color) 90%, transparent); }
+      .bg-overlay-95 { background-color: color-mix(in srgb, var(--overlay-color) 95%, transparent); }
+      .bg-yellow-300 { background-color: var(--accent-color); color: var(--accent-text-color); }
+      .bg-gray-900\/20 { background-color: var(--bg-card-glass); }
+      .bg-gray-900\/50 { background-color: color-mix(in srgb, var(--text-color) 10%, transparent); }
+      .bg-black\/30 { background-color: color-mix(in srgb, var(--overlay-color) 30%, transparent); }
+      .bg-black\/40 { background-color: color-mix(in srgb, var(--overlay-color) 40%, transparent); }
+      
+      /* Border Colors */
+      .border-gray-700 { border-color: var(--border-color); }
+      .border-gray-800 { border-color: var(--border-color-light); }
+      .border-gray-900 { border-color: var(--border-card-glass); }
+      .border-yellow-300, .border-orange-400 { border-color: var(--accent-color); }
+
+      /* Gradient Overlay */
+      .bg-gradient-overlay-bottom {
+        background: linear-gradient(to top, color-mix(in srgb, var(--overlay-color) 100%, transparent) 0%, color-mix(in srgb, var(--overlay-color) 70%, transparent) 50%, transparent 100%);
       }
 
-      /* === MIDNIGHT RUN THEME === */
-      [data-theme="midnight"] {
-        --yellow: #d97706; /* amber-600 */
-        --bg-color: #0a0a0a;
+      /* Hover States */
+      .hover\:text-yellow-300:hover { color: var(--accent-color); }
+      .hover\:text-white:hover { color: var(--text-color-strong); }
+      .hover\:border-yellow-300:hover { border-color: var(--accent-color); }
+      .hover\:border-yellow-300\/50:hover { border-color: color-mix(in srgb, var(--accent-color) 50%, transparent); }
+      .hover\:bg-yellow-300:hover { background-color: var(--accent-color); color: var(--accent-text-color); }
+      .hover\:bg-transparent:hover { background-color: transparent; }
+      .hover\:bg-gray-800:hover { background-color: var(--border-color-light); }
+      
+      /* Redline Effect */
+      #redline-effect div {
+        background-color: var(--redline-color) !important;
+        box-shadow: 0 0 10px var(--redline-color), 0 0 20px var(--redline-color) !important;
       }
-      [data-theme="midnight"] body {
-        background-color: var(--bg-color);
-      }
-      [data-theme="midnight"] .text-yellow-300,
-      [data-theme="midnight"] .border-yellow-300,
-      [data-theme="midnight"] .hover\:text-yellow-300:hover,
-      [data-theme="midnight"] .hover\:border-yellow-300:hover {
-        color: var(--yellow);
-        border-color: var(--yellow);
-      }
-      [data-theme="midnight"] .bg-yellow-300 {
-        background-color: var(--yellow);
-        color: #000; /* Ensure text is readable on amber background */
-      }
-      [data-theme="midnight"] .hover\:bg-yellow-300:hover {
-        background-color: var(--yellow);
-        color: #000; /* Ensure text is readable on hover */
-      }
-       [data-theme="midnight"] .accent-yellow-300 {
-        accent-color: var(--yellow);
-      }
-      [data-theme="midnight"] .text-orange-400 {
-        color: var(--yellow);
-      }
-      [data-theme="midnight"] .border-orange-400 {
-        border-color: var(--yellow);
-      }
-      [data-theme="midnight"] .h-px.bg-orange-400 {
-        background-color: var(--yellow);
-      }
-      [data-theme="midnight"] #redline-effect div {
-        background-color: var(--yellow) !important;
-        box-shadow: 0 0 10px var(--yellow), 0 0 20px var(--yellow) !important;
-      }
-
 
       /* === LIVE LAYER & UI FEEDBACK === */
       
@@ -243,8 +266,8 @@
 
       /* Text Glow Animation */
       @keyframes text-glow {
-        0%, 100% { text-shadow: 0 0 5px rgba(253, 224, 71, 0.3); }
-        50% { text-shadow: 0 0 20px rgba(253, 224, 71, 0.8), 0 0 30px rgba(253, 224, 71, 0.6); }
+        0%, 100% { text-shadow: 0 0 5px var(--accent-color); }
+        50% { text-shadow: 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); }
       }
       .animate-text-glow {
         animation: text-glow 1.5s ease-in-out;
@@ -309,7 +332,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-black">
+<body data-theme="dark">
     <div id="root"></div>
 <script type="module" src="/index.tsx"></script>
 </body>

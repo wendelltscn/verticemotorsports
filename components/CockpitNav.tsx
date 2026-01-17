@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { Page } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { SoundOnIcon, SoundOffIcon } from './icons/PlayerIcons';
-import { SunIcon, MoonIcon } from './icons/ThemeIcons';
 
 const LanguageSwitcher: React.FC<{ onSwitchSpam: () => void }> = ({ onSwitchSpam }) => {
     const { language, setLanguage } = useLanguage();
@@ -29,17 +28,17 @@ const LanguageSwitcher: React.FC<{ onSwitchSpam: () => void }> = ({ onSwitchSpam
     };
 
     return (
-        <div className="flex space-x-1 border border-gray-700 rounded-full p-0.5 bg-black/50">
+        <div className="flex space-x-1 border border-gray-700 rounded-full p-0.5 bg-overlay-50">
             <button
                 onClick={() => handleLanguageChange('pt')}
-                className={`px-3 py-1 text-xs rounded-full transition-colors duration-300 ${language === 'pt' ? 'bg-yellow-300 text-black' : 'text-gray-400 hover:bg-gray-800'} active:scale-95`}
+                className={`px-3 py-1 text-xs rounded-full transition-colors duration-300 ${language === 'pt' ? 'bg-yellow-300 text-black' : 'text-gray-400 hover:bg-gray-900/50'} active:scale-95`}
                 aria-pressed={language === 'pt'}
             >
                 PT
             </button>
             <button
                 onClick={() => handleLanguageChange('en')}
-                className={`px-3 py-1 text-xs rounded-full transition-colors duration-300 ${language === 'en' ? 'bg-yellow-300 text-black' : 'text-gray-400 hover:bg-gray-800'} active:scale-95`}
+                className={`px-3 py-1 text-xs rounded-full transition-colors duration-300 ${language === 'en' ? 'bg-yellow-300 text-black' : 'text-gray-400 hover:bg-gray-900/50'} active:scale-95`}
                 aria-pressed={language === 'en'}
             >
                 EN
@@ -71,19 +70,15 @@ interface CockpitNavProps {
     hasPlayerBeenLoaded: boolean;
     onTogglePlayer: () => void;
     isScrolled: boolean;
-    theme: 'day' | 'midnight';
-    onToggleTheme: () => void;
 }
 
-const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlayerOpen, hasPlayerBeenLoaded, onTogglePlayer, isScrolled, theme, onToggleTheme }) => {
+const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlayerOpen, hasPlayerBeenLoaded, onTogglePlayer, isScrolled }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { t } = useLanguage();
 
     // Easter Egg States
     const [isGhostActive, setIsGhostActive] = useState(false);
     const [ghostMessage, setGhostMessage] = useState('');
-    const [showThemeEgg, setShowThemeEgg] = useState(false);
-    const [themeEggMessage, setThemeEggMessage] = useState('');
     const [showFrequencyEgg, setShowFrequencyEgg] = useState(false);
     const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const frequencyAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -119,14 +114,6 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
         setTimeout(() => setIsGhostActive(false), 4000);
     };
 
-    const handleThemeDoubleClick = () => {
-        const nextTheme = theme === 'day' ? 'midnight' : 'day';
-        const messageKey = nextTheme === 'midnight' ? 'easter_eggs.theme_toggle_midnight' : 'easter_eggs.theme_toggle_day';
-        setThemeEggMessage(t(messageKey));
-        setShowThemeEgg(true);
-        setTimeout(() => setShowThemeEgg(false), 3000);
-    };
-
     const handlePlayerButtonDown = () => {
         holdTimer.current = setTimeout(() => {
             setShowFrequencyEgg(true);
@@ -147,7 +134,7 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
     };
 
     const soundIcon = hasPlayerBeenLoaded ? <SoundOnIcon className="w-6 h-6" /> : <SoundOffIcon className="w-6 h-6" />;
-    const soundButtonClasses = `w-12 h-12 bg-black/50 backdrop-blur-sm border rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 hover:-translate-y-0.5 active:translate-y-0 ${
+    const soundButtonClasses = `w-12 h-12 bg-overlay-50 backdrop-blur-sm border rounded-full flex items-center justify-center transition-all duration-300 active:scale-95 hover:-translate-y-0.5 active:translate-y-0 ${
         isPlayerOpen 
         ? 'border-yellow-300 text-yellow-300' 
         : 'border-gray-800 text-white hover:border-yellow-300'}`;
@@ -158,7 +145,7 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
 
     return (
         <>
-            <header className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between p-6 transition-all duration-300 ${isScrolled ? 'bg-black/50 backdrop-blur-md border-b border-gray-900/50' : ''}`}>
+            <header className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between p-6 transition-all duration-300 ${isScrolled ? 'bg-overlay-50 backdrop-blur-md border-b border-gray-900/50' : ''}`}>
                 <button 
                     onClick={() => handleNav('Home')}
                     onDoubleClick={handleLogoDoubleClick}
@@ -181,9 +168,6 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
 
                 <div className="flex items-center gap-4">
                     <LanguageSwitcher onSwitchSpam={handleLangSwitchSpam} />
-                     <button onDoubleClick={handleThemeDoubleClick} onClick={onToggleTheme} className="w-12 h-12 bg-black/50 backdrop-blur-sm border border-gray-800 rounded-full flex items-center justify-center text-white hover:border-yellow-300 transition-all duration-300 active:scale-95 hover:-translate-y-0.5 active:translate-y-0" aria-label="Toggle Theme">
-                        {theme === 'day' ? <MoonIcon className="w-6 h-6" /> : <SunIcon className="w-6 h-6" />}
-                    </button>
                     <button 
                         onClick={handleTogglePlayerWithSound} 
                         onMouseDown={handlePlayerButtonDown}
@@ -195,14 +179,14 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
                     >
                         {soundIcon}
                     </button>
-                    <button onClick={handleToggleMenu} className="w-12 h-12 bg-black/50 backdrop-blur-sm border border-gray-800 rounded-full flex items-center justify-center text-white hover:border-yellow-300 transition-all duration-300 active:scale-95 hover:-translate-y-0.5 active:translate-y-0" aria-label="Toggle Navigation" aria-expanded={isOpen}>
+                    <button onClick={handleToggleMenu} className="w-12 h-12 bg-overlay-50 backdrop-blur-sm border border-gray-800 rounded-full flex items-center justify-center text-white hover:border-yellow-300 transition-all duration-300 active:scale-95 hover:-translate-y-0.5 active:translate-y-0" aria-label="Toggle Navigation" aria-expanded={isOpen}>
                         {isOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                     </button>
                 </div>
             </header>
 
             <div
-                className={`fixed inset-0 z-[99] bg-black/90 backdrop-blur-lg transition-opacity duration-500 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                className={`fixed inset-0 z-[99] bg-overlay-90 backdrop-blur-lg transition-opacity duration-500 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 onClick={() => setIsOpen(false)}
             >
                 <nav className="w-full h-full flex flex-col items-center justify-center gap-6">
@@ -220,25 +204,19 @@ const CockpitNav: React.FC<CockpitNavProps> = ({ onNavigate, activePage, isPlaye
             </div>
             
             {isGhostActive && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-sm text-center text-green-400 bg-black/50 px-4 py-2 border border-green-900/50 animate-fade-in-up z-[101]">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-sm text-center text-green-400 bg-overlay-50 px-4 py-2 border border-green-900/50 animate-fade-in-up z-[101]">
                     &gt; {ghostMessage}
                 </div>
             )}
             
-            {showThemeEgg && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-black/50 border border-gray-800 px-3 py-1 animate-fade-in-up z-[101]">
-                    {themeEggMessage}
-                </div>
-            )}
-
             {showFrequencyEgg && (
-                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-black/50 border border-gray-800 px-3 py-1 animate-fade-in-up z-[101]">
+                 <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-overlay-50 border border-gray-800 px-3 py-1 animate-fade-in-up z-[101]">
                     {t('easter_eggs.secret_frequency')}
                 </div>
             )}
 
             {showLangEgg && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-black/50 border border-gray-800 px-3 py-1 animate-fade-in-up z-[101]">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-overlay-50 border border-gray-800 px-3 py-1 animate-fade-in-up z-[101]">
                     {t('easter_eggs.language_spam')}
                 </div>
             )}

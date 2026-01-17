@@ -22,8 +22,6 @@ import RedlineEffect from './components/RedlineEffect';
 import CustomCursor from './components/CustomCursor';
 import { useLanguage } from './context/LanguageContext';
 
-type Theme = 'day' | 'midnight';
-
 const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [activePage, setActivePage] = useState<Page>('Home');
@@ -35,7 +33,6 @@ const App: React.FC = () => {
     const [hoveredBackground, setHoveredBackground] = useState<string | null>(null);
     const [keySequence, setKeySequence] = useState('');
     const [isTerminalMode, setIsTerminalMode] = useState(false);
-    const [theme, setTheme] = useState<Theme>('day');
 
     // Easter Egg States
     const [isBlueprintMode, setIsBlueprintMode] = useState(false);
@@ -70,19 +67,7 @@ const App: React.FC = () => {
         if (bpMode) {
             setIsBlueprintMode(bpMode);
         }
-
-        // Load theme from local storage
-        const savedTheme = localStorage.getItem('vrt_theme') as Theme;
-        if (savedTheme) {
-            setTheme(savedTheme);
-        }
     }, []);
-
-    useEffect(() => {
-        // Persist theme choice
-        localStorage.setItem('vrt_theme', theme);
-        document.body.setAttribute('data-theme', theme);
-    }, [theme]);
 
      useEffect(() => {
         // After loading, animate the first page in
@@ -235,10 +220,6 @@ const App: React.FC = () => {
         setIsPlayerOpen(opening);
     };
 
-    const toggleTheme = () => {
-        setTheme(current => current === 'day' ? 'midnight' : 'day');
-    }
-
     const renderPage = () => {
         switch (activePage) {
             case 'Home': return <Home onNavigate={handleNavigate} intentPage={intentPage} onBackgroundChange={setHoveredBackground} />;
@@ -255,32 +236,32 @@ const App: React.FC = () => {
             default: return <Home onNavigate={handleNavigate} intentPage={intentPage} onBackgroundChange={setHoveredBackground} />;
         }
     };
-
-    if (isLoading) return <Preloader />;
-
+    
     return (
         <>
             <CustomCursor />
-            <AppContent 
-                activePage={activePage}
-                isScrolled={isScrolled}
-                isPlayerOpen={isPlayerOpen}
-                hasPlayerBeenLoaded={hasPlayerBeenLoaded}
-                onTogglePlayer={handleTogglePlayer}
-                onNavigate={handleNavigate}
-                renderPage={renderPage}
-                hoveredBackground={hoveredBackground}
-                allBackgroundImages={allBackgroundImages}
-                transitionState={transitionState}
-                isTerminalMode={isTerminalMode}
-                closeTerminal={() => setIsTerminalMode(false)}
-                isGlitchActive={isGlitchActive}
-                isBlueprintMode={isBlueprintMode}
-                showBlueprintNotification={showBlueprintNotification}
-                showRedline={showRedline}
-                theme={theme}
-                onToggleTheme={toggleTheme}
-            />
+            {isLoading ? (
+                <Preloader />
+            ) : (
+                <AppContent 
+                    activePage={activePage}
+                    isScrolled={isScrolled}
+                    isPlayerOpen={isPlayerOpen}
+                    hasPlayerBeenLoaded={hasPlayerBeenLoaded}
+                    onTogglePlayer={handleTogglePlayer}
+                    onNavigate={handleNavigate}
+                    renderPage={renderPage}
+                    hoveredBackground={hoveredBackground}
+                    allBackgroundImages={allBackgroundImages}
+                    transitionState={transitionState}
+                    isTerminalMode={isTerminalMode}
+                    closeTerminal={() => setIsTerminalMode(false)}
+                    isGlitchActive={isGlitchActive}
+                    isBlueprintMode={isBlueprintMode}
+                    showBlueprintNotification={showBlueprintNotification}
+                    showRedline={showRedline}
+                />
+            )}
         </>
     );
 };
@@ -289,7 +270,7 @@ const App: React.FC = () => {
 const AppContent: React.FC<any> = ({
     activePage, isScrolled, isPlayerOpen, hasPlayerBeenLoaded, onTogglePlayer, onNavigate, renderPage,
     hoveredBackground, allBackgroundImages, transitionState, isTerminalMode, closeTerminal,
-    isGlitchActive, isBlueprintMode, showBlueprintNotification, showRedline, theme, onToggleTheme
+    isGlitchActive, isBlueprintMode, showBlueprintNotification, showRedline
 }) => {
     const { t } = useLanguage();
 
@@ -314,8 +295,6 @@ const AppContent: React.FC<any> = ({
                 hasPlayerBeenLoaded={hasPlayerBeenLoaded}
                 onTogglePlayer={onTogglePlayer}
                 isScrolled={isScrolled}
-                theme={theme}
-                onToggleTheme={onToggleTheme}
             />
             <main 
                 key={activePage}

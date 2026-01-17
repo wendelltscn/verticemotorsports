@@ -13,9 +13,9 @@ const ProjectCard: React.FC<{ project: Project; onClick: () => void; isBlueprint
     return (
         <div className={`group relative overflow-hidden bg-black cursor-pointer aspect-[4/3] transition-transform duration-500 hover:-translate-y-1 ${cardClasses}`} onClick={onClick}>
             <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out" loading="lazy" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent z-10"></div>
+            <div className="absolute inset-0 bg-gradient-overlay-bottom z-10"></div>
             
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            <div className="absolute inset-0 bg-overlay-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                 <span className="font-editorial text-white tracking-widest border border-white px-4 py-2 text-sm">
                     {t('shared.view_details')}
                 </span>
@@ -99,13 +99,13 @@ const ProjectModal: React.FC<{
     const headingClasses = isBlueprintMode ? 'font-technical' : 'font-editorial';
 
     return (
-        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 animate-fade-in-up-fast" onClick={onClose} style={{animationDuration: '0.5s'}}>
+        <div className="fixed inset-0 bg-overlay-95 z-[100] flex items-center justify-center p-4 animate-fade-in-up-fast" onClick={onClose} style={{animationDuration: '0.5s'}}>
             
-            <div className={`relative bg-[#0A0F1A] max-w-6xl w-full max-h-[90vh] overflow-y-auto border border-blue-400/30 ${modalClasses}`} onClick={e => e.stopPropagation()}>
+            <div className={`relative bg-modal max-w-6xl w-full max-h-[90vh] overflow-y-auto border border-blue-400/30 ${modalClasses}`} onClick={e => e.stopPropagation()}>
                 
                  <button 
                     onClick={onClose} 
-                    className="absolute top-4 right-4 z-20 p-2 bg-black/50 rounded-full text-gray-400 hover:text-white transition-all duration-300 hover:rotate-90"
+                    className="absolute top-4 right-4 z-20 p-2 bg-overlay-50 rounded-full text-gray-400 hover:text-white transition-all duration-300 hover:rotate-90"
                     aria-label="Close"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -125,7 +125,7 @@ const ProjectModal: React.FC<{
                                     <span className="block w-full h-full bg-yellow-300/80 rounded-full hotspot-pulse border-2 border-black/50"></span>
                                 </button>
                                  <div 
-                                    className={`absolute p-3 text-sm font-technical bg-black/80 backdrop-blur-sm border border-yellow-300/50 text-white rounded-md w-48 transition-all duration-300 pointer-events-none -translate-x-1/2 ${activeHotspot === index ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+                                    className={`absolute p-3 text-sm font-technical bg-overlay-80 backdrop-blur-sm border border-yellow-300/50 text-white rounded-md w-48 transition-all duration-300 pointer-events-none -translate-x-1/2 ${activeHotspot === index ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
                                     style={{ left: hotspot.x, top: `calc(${hotspot.y} - 1.75rem)`, transform: 'translateX(-50%) translateY(-100%)' }}
                                 >
                                     {secretHotspot === index ? t('easter_eggs.hotspot_spam') : hotspot.text}
@@ -176,19 +176,19 @@ const ProjectModal: React.FC<{
                 </div>
 
                 {project.logbook && project.logbook.length > 0 && (
-                    <div className="border-t border-blue-400/20 p-8 md:p-10 bg-black/30">
+                    <div className="border-t border-blue-400/20 p-8 md:p-10 bg-overlay-30">
                         <h3 onClick={handleLogbookClick} className={`${headingClasses} text-2xl text-white mb-6 cursor-pointer select-none`}>{t('projetos.modal.logbook_title')}</h3>
                         <div className="relative pl-6 space-y-8 border-l-2 border-dashed border-blue-400/30">
                            {isLogbookGlitched ? (
                                 <div className="relative">
-                                    <div className="absolute -left-[34px] top-1 w-4 h-4 bg-red-500/50 rounded-full border-4 border-[#0A0F1A] animate-pulse"></div>
+                                    <div className="absolute -left-[34px] top-1 w-4 h-4 bg-red-500/50 rounded-full border-4 border-modal"></div>
                                     <p className="font-technical text-xs text-red-400 uppercase tracking-widest">DATA CORRUPTION DETECTED</p>
                                     <p className="mt-2 text-red-300 leading-relaxed">{glitchMessages[Math.floor(Math.random() * glitchMessages.length)]}</p>
                                 </div>
                            ) : (
                                 project.logbook.map((entry, index) => (
                                     <div key={index} className="relative">
-                                        <div className="absolute -left-[34px] top-1 w-4 h-4 bg-blue-500/50 rounded-full border-4 border-[#0A0F1A]"></div>
+                                        <div className="absolute -left-[34px] top-1 w-4 h-4 bg-blue-500/50 rounded-full border-4 border-modal"></div>
                                         <p className="font-technical text-xs text-yellow-300 uppercase tracking-widest">{entry.date}</p>
                                         <p className="mt-2 text-gray-400 leading-relaxed">{entry.update}</p>
                                     </div>

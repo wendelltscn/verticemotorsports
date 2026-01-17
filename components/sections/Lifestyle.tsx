@@ -109,7 +109,7 @@ const Lifestyle: React.FC = () => {
                                                 alt={t(image.altKey)} 
                                                 className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110" 
                                             />
-                                            <div className="absolute inset-0 bg-black/70 flex items-center justify-center p-1 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                                            <div className="absolute inset-0 bg-overlay-70 flex items-center justify-center p-1 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                                                 <span className="font-technical text-white text-[10px] leading-tight uppercase tracking-wider">
                                                     {t(overlayKey)}
                                                 </span>
@@ -170,7 +170,7 @@ const Lifestyle: React.FC = () => {
                 </main>
             </div>
              {showQAEgg && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-black/50 border border-gray-800 px-3 py-1 animate-fade-in-up z-50">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-overlay-50 border border-gray-800 px-3 py-1 animate-fade-in-up z-50">
                     {t('easter_eggs.lifestyle_qa')}
                 </div>
             )}

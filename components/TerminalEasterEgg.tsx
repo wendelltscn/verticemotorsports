@@ -1,8 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
 
 interface TerminalEasterEggProps {
     onClose: () => void;
+}
+
+interface Message {
+    sender: 'user' | 'ai' | 'system';
+    text: string;
 }
 
 const logoAscii = `
@@ -45,34 +52,79 @@ const bootSequence = [
     { text: '// CHALLENGE THE EPHEMERAL.', delay: 150 },
     { text: '// THE MACHINE HAS A SOUL.', delay: 150 },
     { text: '', delay: 300 },
-    { text: '> DIE NEVER.', delay: 100, isPrompt: true },
+    { text: '> CONNECTION ESTABLISHED.', delay: 100 },
 ];
 
 
 const TerminalEasterEgg: React.FC<TerminalEasterEggProps> = ({ onClose }) => {
+    const { t, language } = useLanguage();
     const [lines, setLines] = useState<React.ReactNode[]>([]);
-    const [showCursor, setShowCursor] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState('');
+    const [isLoading, setIsLoading] = useState(true); // Loading during boot sequence
+    const [isBooting, setIsBooting] = useState(true);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const systemInstruction = t('easter_eggs.terminal_ai_prompt');
 
     useEffect(() => {
         let currentDelay = 500;
-        bootSequence.forEach((line, index) => {
+        bootSequence.forEach((line) => {
             currentDelay += line.delay;
             setTimeout(() => {
                 let content;
                 if (line.isLogo) {
                     content = <pre className="text-green-400 text-[6px] sm:text-[7px] leading-tight" style={{ textShadow: '0 0 5px rgba(132, 204, 22, 0.5)' }}>{line.text}</pre>;
-                } else if (line.isPrompt) {
-                    content = <span className="flex items-center">{line.text}<span className="w-2 h-4 bg-green-400 ml-2 animate-blinker"></span></span>;
                 } else {
                     content = <span>{line.text}</span>;
                 }
                 setLines(prev => [...prev, content]);
-                if (index === bootSequence.length - 1) {
-                   setShowCursor(true);
-                }
             }, currentDelay);
         });
+
+        // End of boot sequence
+        setTimeout(() => {
+            setIsLoading(false);
+            setIsBooting(false);
+        }, currentDelay + 200);
+
     }, []);
+
+     useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages, lines]);
+
+    const handleCommand = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!input.trim() || isLoading) return;
+
+        const userMessage: Message = { sender: 'user', text: input };
+        setMessages(prev => [...prev, userMessage]);
+        setInput('');
+        setIsLoading(true);
+
+        const chatHistory = [...messages, userMessage].map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.text }]
+        }));
+
+        try {
+            const response: GenerateContentResponse = await ai.models.generateContent({
+                model: 'gemini-3-flash-preview',
+                contents: chatHistory,
+                config: { systemInstruction },
+            });
+            const aiText = response.text ?? '...';
+            setMessages(prev => [...prev, { sender: 'ai', text: aiText }]);
+        } catch (error) {
+            console.error("Terminal AI Error:", error);
+            setMessages(prev => [...prev, { sender: 'system', text: '// CONNECTION LOST.' }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -86,8 +138,8 @@ const TerminalEasterEgg: React.FC<TerminalEasterEggProps> = ({ onClose }) => {
 
     return (
         <div 
-            className="fixed inset-0 bg-black z-[200] flex flex-col p-4 sm:p-8 font-technical text-green-400 animate-fade-in-up-fast"
-            style={{ textShadow: '0 0 3px rgba(132, 204, 22, 0.4)' }}
+            className="fixed inset-0 z-[200] flex flex-col p-4 sm:p-8 font-technical text-green-400 animate-fade-in-up-fast"
+            style={{ backgroundColor: '#000', textShadow: '0 0 3px rgba(132, 204, 22, 0.4)' }}
         >
             <div className="absolute inset-0 bg-black opacity-40 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px)', backgroundSize: '2px 2px' }}></div>
             <div className="absolute inset-0 opacity-10 pointer-events-none animate-scanline-terminal"></div>
@@ -102,13 +154,42 @@ const TerminalEasterEgg: React.FC<TerminalEasterEggProps> = ({ onClose }) => {
                 }
             `}</style>
             
-            <div className="w-full h-full border border-green-900/50 p-4 overflow-y-auto flex flex-col justify-center">
+            <div className="w-full h-full border border-green-900/50 p-4 overflow-y-auto">
                 {lines.map((line, index) => (
-                    <div key={index} className="whitespace-pre-wrap animate-fade-in-up" style={{ animationDuration: '0.3s' }}>
+                    <div key={`boot-${index}`} className="whitespace-pre-wrap">
                         {line}
                     </div>
                 ))}
+
+                {!isBooting && (
+                    <div className="mt-4">
+                        {messages.map((msg, index) => (
+                             <div key={`msg-${index}`} className="flex gap-2">
+                                <span className={msg.sender === 'user' ? 'text-gray-500' : 'text-green-400'}>
+                                    {msg.sender === 'user' ? '>' : (msg.sender === 'ai' ? 'VRT_GHOST:' : 'SYSTEM:')}
+                                </span>
+                                <p className={`whitespace-pre-wrap ${msg.sender === 'system' ? 'text-red-500' : ''}`}>{msg.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                 <div ref={messagesEndRef} />
             </div>
+            
+            {!isBooting && (
+                <form onSubmit={handleCommand} className="flex gap-2 items-center mt-2 p-2 border-t border-green-900/50">
+                    <span>&gt;</span>
+                    <input 
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        disabled={isLoading}
+                        className="bg-transparent border-none text-green-400 w-full focus:outline-none"
+                        autoFocus
+                    />
+                     {isLoading && <span className="w-2 h-4 bg-green-400 animate-blinker"></span>}
+                </form>
+            )}
             
             <button
                 onClick={onClose}

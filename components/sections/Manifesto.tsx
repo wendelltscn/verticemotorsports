@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 
 const ValueCard: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <div className="bg-black/20 border border-gray-900 p-6 h-full">
+    <div className="bg-gray-900/20 border border-gray-900 p-6 h-full">
         <h3 className="font-editorial text-xl text-yellow-300 tracking-wider mb-3">{title}</h3>
         <p className="text-gray-400 leading-relaxed">{children}</p>
     </div>
@@ -25,8 +25,7 @@ const Manifesto: React.FC = () => {
         en: "the symphony of a perfectly tuned engine"
     };
     
-    // Direct download link for the provided audio file.
-    const audioUrl = "https://www.dropbox.com/scl/fi/c2h7lyypgpyvqy3tjgdvt/Amazing-engine-sounds-V8-engine-tuning-powerful-engines-femtophysiker-v8engine-enginesound.mp3?rlkey=7t6hl20xrd4kbcnspb94gfem1&st=b849i9j4&dl=1";
+    const audioUrl = "https://www.dropbox.com/scl/fi/c2h7lyypgpyvqy3tjgdvt/Amazing-engine-sounds-V8-engine-tuning-powerful-engines-femtophysiker-v8engine-enginesound.mp3?rlkey=7t6hl20xrd4kbcnspb94gfem1&raw=1";
 
     const handleSymphonyClick = () => {
         if (symphonyClickTimer.current) clearTimeout(symphonyClickTimer.current);
@@ -83,11 +82,16 @@ const Manifesto: React.FC = () => {
                     {parts[0]}
                     <span 
                         onClick={handleSymphonyClick} 
-                        className="cursor-pointer hover:text-yellow-300 transition-colors duration-300"
+                        className="relative inline-block cursor-pointer hover:text-yellow-300 transition-colors duration-300"
                         title="Play Sound"
                         role="button"
                     >
                         {keyPhrase}
+                        {showSymphonyEgg && (
+                            <span className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max font-technical text-xs text-gray-400 animate-fade-in-up bg-black/50 px-3 py-1 border border-gray-800 rounded">
+                                {t('easter_eggs.manifesto_spam')}
+                            </span>
+                        )}
                     </span>
                     {parts[1]}
                 </>
@@ -108,7 +112,7 @@ const Manifesto: React.FC = () => {
             >
               <source src="https://i.imgur.com/v2j3j3j.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-black/80 z-10"></div>
+            <div className="absolute inset-0 bg-overlay-80 z-10"></div>
             
             <div className="relative z-20">
                 <header className="h-[70vh] w-full flex flex-col justify-center items-center text-center p-6">
@@ -129,7 +133,7 @@ const Manifesto: React.FC = () => {
                         ))}
                     </article>
 
-                    <section className="py-20 md:py-28 mt-20 md:mt-28 bg-black/50 animate-fade-in-up-slow delay-400">
+                    <section className="py-20 md:py-28 mt-20 md:mt-28 bg-overlay-50 animate-fade-in-up-slow delay-400">
                         <div className="container mx-auto px-6 text-center max-w-4xl">
                             <h2 className="font-editorial text-3xl md:text-4xl text-white tracking-wider mb-4">{t('manifesto.vision_title')}</h2>
                             <p className="text-gray-400 leading-relaxed text-lg">
@@ -169,11 +173,6 @@ const Manifesto: React.FC = () => {
                     </section>
                 </main>
             </div>
-             {showSymphonyEgg && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 font-technical text-xs text-center text-gray-500 bg-black/50 border border-gray-800 px-3 py-1 animate-fade-in-up z-50">
-                    {t('easter_eggs.manifesto_spam')}
-                </div>
-            )}
         </div>
     );
 };

@@ -30,10 +30,10 @@ const pageBackgrounds: Partial<Record<Page, string>> = {
     Projetos: 'https://i.imgur.com/t4bSdlB.png',
     Run: 'https://i.imgur.com/oszZB03.png',
     VrtcMedia: 'https://i.imgur.com/Zg0fkVA.png',
-    Conceito: 'https://i.imgur.com/4bzpSbj.png',
+    Conceito: 'https://i.imgur.com/YSuDJBG.png',
     Podcast: 'https://i.imgur.com/NWGRjXa.png',
-    Contato: 'https://i.imgur.com/XBj922H.png',
-    Lifestyle: 'https://i.imgur.com/NWGRjXa.png',
+    Contato: 'https://i.imgur.com/v7QYRwU.png',
+    Lifestyle: 'https://i.imgur.com/NWGRjXa.png', // Fallback, will be dynamically replaced
 };
 
 
@@ -121,7 +121,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ onNavigate, intentPage, onBackgroundChange }) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [hoveredPage, setHoveredPage] = useState<Page | null>(null);
     const [isCenterHovered, setIsCenterHovered] = useState(false);
     const [hoveredGuideOption, setHoveredGuideOption] = useState<Page | null>(null);
@@ -146,8 +146,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate, intentPage, onBackgroundChange 
             setShowFirstTimeHint(true);
         }
         // Preload audio files
-        ignitionKeyAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/8ctu9afi7f6fsejol1sym/Key-start-engine-sound-effect.mp3?rlkey=vttalgh2f6732nvvc2hzgjqnt&st=w0ijfuwd&dl=1");
-        ignitionStartAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/e340i4067i14xzjfw0eap/Car-Engine-Start-Sound-Effect-ProSounds.mp3?rlkey=rv0ph2x5m2aax9glkpn541gd1&st=2izy0jzm&dl=1");
+        ignitionKeyAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/8ctu9afi7f6fsejol1sym/Key-start-engine-sound-effect.mp3?rlkey=vttalgh2f6732nvvc2hzgjqnt&raw=1");
+        ignitionStartAudioRef.current = new Audio("https://www.dropbox.com/scl/fi/e340i4067i14xzjfw0eap/Car-Engine-Start-Sound-Effect-ProSounds.mp3?rlkey=rv0ph2x5m2aax9glkpn541gd1&raw=1");
         
         if (ignitionKeyAudioRef.current) {
             ignitionKeyAudioRef.current.onended = () => {
@@ -158,9 +158,16 @@ const Home: React.FC<HomeProps> = ({ onNavigate, intentPage, onBackgroundChange 
 
     useEffect(() => {
         const pageToHighlight = hoveredPage || hoveredGuideOption || intentPage;
-        const newBg = pageToHighlight ? pageBackgrounds[pageToHighlight as keyof typeof pageBackgrounds] : null;
+        let newBg = pageToHighlight ? pageBackgrounds[pageToHighlight as keyof typeof pageBackgrounds] : null;
+        
+        if (pageToHighlight === 'Lifestyle') {
+            newBg = language === 'pt' 
+                ? 'https://i.imgur.com/0jKw5Tw.png' // PT back view model
+                : 'https://i.imgur.com/UCsQA80.png'; // EN back view model
+        }
+
         onBackgroundChange(newBg || null);
-    }, [hoveredPage, hoveredGuideOption, intentPage, onBackgroundChange]);
+    }, [hoveredPage, hoveredGuideOption, intentPage, onBackgroundChange, language]);
 
     useEffect(() => {
         const targetSequence = ['Manifesto', 'Works', 'Projetos', 'Run'];
