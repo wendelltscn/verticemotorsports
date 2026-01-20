@@ -1,0 +1,89 @@
+
+import * as React from 'react';
+import { InstagramIcon, YoutubeIcon, WhatsappIcon } from '../icons/SocialIcons';
+import { useLanguage } from '../../context/LanguageContext';
+
+const Movimento: React.FC = () => {
+    const { t } = useLanguage();
+    const [ctaClicks, setCtaClicks] = React.useState(0);
+    const [ctaMessage, setCtaMessage] = React.useState('');
+    const ctaTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleCtaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (ctaTimer.current) clearTimeout(ctaTimer.current);
+
+        const newCount = ctaClicks + 1;
+        setCtaClicks(newCount);
+
+        if (newCount >= 7) {
+            e.preventDefault(); // Prevent navigation to show the easter egg
+            setCtaMessage(t('easter_eggs.movimento_cta_spam'));
+            setTimeout(() => {
+                setCtaMessage('');
+            }, 4000);
+            setCtaClicks(0); // Reset after triggering
+        } else {
+            ctaTimer.current = setTimeout(() => {
+                setCtaClicks(0); // Reset after 2s of inactivity
+            }, 2000);
+        }
+    };
+    
+    return (
+        <div className="relative min-h-screen w-full flex flex-col items-center justify-center text-center text-white py-20">
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-fixed z-0" 
+              style={{ backgroundImage: "url(https://i.imgur.com/oszZB03.png)" }}
+            >
+              <div className="absolute inset-0 bg-black opacity-80"></div>
+            </div>
+
+            <div className="relative z-10 p-6 flex flex-col items-center max-w-3xl mx-auto">
+                <header className="mb-8 animate-fade-in-up-dynamic">
+                    <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl text-white tracking-wider mb-4">{t('movimento.title')}</h1>
+                    <p className="font-technical uppercase text-gray-500 tracking-[0.3em] text-sm">{t('movimento.subtitle')}</p>
+                </header>
+                
+                <div className="space-y-6 text-lg text-gray-300 leading-relaxed mb-12 animate-fade-in-up-dynamic delay-200">
+                    <p>{t('movimento.p1')}</p>
+                    <p>{t('movimento.p2')}</p>
+                </div>
+
+                <div className="flex flex-col gap-4 w-full max-w-md items-center animate-fade-in-up-dynamic delay-400">
+                    <a 
+                        href="https://wa.link/w4b8ap"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={handleCtaClick}
+                        className="flex w-full items-center justify-center gap-3 font-editorial uppercase tracking-widest text-base border-2 border-yellow-300 text-yellow-300 px-8 py-4 hover:bg-yellow-300 hover:text-black transition-all duration-300 ease-in-out hover:-translate-y-1 active:translate-y-0"
+                    >
+                        <WhatsappIcon className="w-5 h-5" />
+                        <span>{ctaMessage || t('movimento.button_main')}</span>
+                    </a>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full">
+                        <a 
+                            href="https://www.instagram.com/verticemotorsports/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-1 items-center justify-center gap-3 font-editorial uppercase tracking-widest text-base border border-gray-600 text-gray-400 px-8 py-3 hover:border-white hover:text-white transition-all duration-300 ease-in-out hover:-translate-y-1 active:translate-y-0"
+                        >
+                            <InstagramIcon className="w-5 h-5" />
+                            <span>{t('movimento.button_instagram')}</span>
+                        </a>
+                         <a 
+                            href="https://www.youtube.com/@VerticeMotorsports"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-1 items-center justify-center gap-3 font-editorial uppercase tracking-widest text-base border border-gray-600 text-gray-400 px-8 py-3 hover:border-white hover:text-white transition-all duration-300 ease-in-out hover:-translate-y-1 active:translate-y-0"
+                        >
+                            <YoutubeIcon className="w-5 h-5" />
+                            <span>{t('movimento.button_youtube')}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Movimento;
